@@ -9,7 +9,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-NUM_CITIES = 23
+NUM_CITIES = 42
 STEADY_STATE = 1000
 
 
@@ -108,13 +108,11 @@ def main():
 	steady_state = 0
 	step = 0
 	partition = pop_number // num_parents
-	pm = 0.9
+	pm = 0.2
 	while steady_state < STEADY_STATE:
 		step += 1
 		steady_state += 1
 		offspring[-1] = parents[0]
-		if step % 300 == 0 and pm != 0.1:
-			pm -= 0.1
 		for i in range(pop_number-1):
 			son = tweak(parents[i // partition][1], pm = pm)
 			offspring[i] = (problem.evaluate_solution(son), son)
