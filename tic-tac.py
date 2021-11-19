@@ -8,7 +8,6 @@ FOUR = 4
 DEPTH = 3
 
 
-
 def valid_moves(free_column):
 	# """Returns columns where a disc may be played"""
 	# return [n for n in range(NUM_COLUMNS) if board[n, COLUMN_HEIGHT - 1] == 0]
@@ -99,44 +98,49 @@ def min_max(board, player, depth, alpha, beta):
 	possible = valid_moves(free_column)
 	if evaluation == 1 or evaluation == -1 or not possible or depth == DEPTH:
 		return None, evaluation
-	tree = np.full(NUM_COLUMNS, -2.0)
-	if player == 1:
+	if player == -1:
+		tree = np.full(NUM_COLUMNS, 2.0)
 		for column in possible:
 			play(board, column, player, free_column)
 			_, val = min_max(board, -player, depth + 1, alpha, beta)
+			take_back(board, column, free_column)
 			alpha = max(alpha, val)
+			tree[column] = val
 			if val >= beta:
 				break
-			take_back(board, column, free_column)
-			tree[column] = val
-		i = tree.argmax()
+		i = tree.argmin()
 	else:
+		tree = np.full(NUM_COLUMNS, -2.0)
 		for column in possible:
 			play(board, column, player, free_column)
 			_, val = min_max(board, -player, depth + 1, alpha, beta)
-			beta = min(beta, val)
-			if val >= alpha:
-				break
 			take_back(board, column, free_column)
+			beta = min(beta, val)
 			tree[column] = val
-		i = tree.argmin()
+			if val <= alpha:
+				break
+		i = tree.argmax()
 	return i, tree[i]
 
 
 board = np.zeros((NUM_COLUMNS, COLUMN_HEIGHT), dtype=np.byte)
 free_column = np.zeros(NUM_COLUMNS, dtype = int)
-play(board, 3, 1, free_column)
+play(board, 5, 1, free_column)
 play(board, 1, -1, free_column)
 play(board, 4, 1, free_column)
 print(board)
 t = time()
-min_max(board, -1, 1, -2, 2)
+i = min_max(board, -1, 1, -2, 2)
 print(time() - t)
-min_max(board, 1, 1, -2, 2)
+play(board, i[0], -1, free_column)
+print(board)
+i = min_max(board, 1, 1, -2, 2)
+play(board, i[0], 1, free_column)
+print(board)
+# min_max(board, 1, 1, -2, 2)
 
 # play(board, 0, -1)
 # play(board, 4, 1)
 # play(board, 0, -1)
 # play(board, 5, 1)
-print(board)
 # print(eval_board(board, 1))
