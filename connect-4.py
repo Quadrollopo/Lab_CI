@@ -1,6 +1,5 @@
 from collections import Counter
 import numpy as np
-from time import time
 
 NUM_COLUMNS = 7
 COLUMN_HEIGHT = 6
@@ -129,18 +128,9 @@ play(board, 5, 1, free_column)
 play(board, 1, -1, free_column)
 play(board, 4, 1, free_column)
 print(board)
-t = time()
-i = min_max(board, -1, 1, -2, 2)
-print(time() - t)
-play(board, i[0], -1, free_column)
-print(board)
-i = min_max(board, 1, 1, -2, 2)
-play(board, i[0], 1, free_column)
-print(board)
-# min_max(board, 1, 1, -2, 2)
 
-# play(board, 0, -1)
-# play(board, 4, 1)
-# play(board, 0, -1)
-# play(board, 5, 1)
-# print(eval_board(board, 1))
+p = -1
+i, _ = min_max(board, p, 1, -2, 2)
+play(board, i, p, free_column)
+print(board)
+
